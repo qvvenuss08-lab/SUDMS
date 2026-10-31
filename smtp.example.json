@@ -1,0 +1,8 @@
+{
+  "HOST": "",
+  "PORT": 587,
+  "SECURITY": "starttls",
+  "USERNAME": "",
+  "PASSWORD": "",
+  "FROM": ""
+}

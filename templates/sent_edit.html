@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block title %}แก้ไขหนังสือส่ง · SUDMS{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">DOCUMENTS / EDIT SENT DOCUMENT</div><h1>แก้ไขหนังสือส่ง</h1><p>เลขที่หนังสือ <strong>{{doc.display_number}}</strong> · แก้ไขข้อมูลและไฟล์แนบ พร้อมเก็บประวัติการเปลี่ยนแปลง</p></div><a class="btn btn-outline-secondary" href="/?view=sent"><i class="bi bi-arrow-left me-2"></i>กลับทะเบียนหนังสือส่ง</a></div>
+<section class="card-minimal sent-editor-page"><div class="section-header"><div><h2>ข้อมูลหนังสือส่ง</h2><p>ใช้ฟอร์มเดียวกับเพิ่มหนังสือส่ง เลขและข้อมูลที่บันทึกไว้จะเติมให้อัตโนมัติ</p></div><a class="btn btn-light" href="/documents/{{doc.id}}">ดูประวัติเอกสาร</a></div>{% include 'partials/sent_form.html' %}</section>
+{% include 'partials/attachment_list.html' %}
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='js/sent.js',v='sent-edit-after-send')}}" defer></script>{% endblock %}

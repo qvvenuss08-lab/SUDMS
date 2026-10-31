@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+instance
+**/__pycache__
+*.pyc
+.env
+.env.*
+!.env.example
+tests
+.vscode
+*.log
+smtp.json

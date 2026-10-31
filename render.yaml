@@ -1,0 +1,23 @@
+# Paid web service and persistent disk. Review the price in Render before deploying.
+services:
+  - type: web
+    name: sudms
+    runtime: docker
+    plan: starter
+    region: singapore
+    numInstances: 1
+    autoDeployTrigger: "off"
+    healthCheckPath: /healthz
+    disk:
+      name: sudms-data
+      mountPath: /var/data
+      sizeGB: 2
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: SUDMS_INSTANCE_PATH
+        value: /var/data/sudms
+      - key: SUDMS_HTTPS
+        value: "1"
+      - key: SUDMS_SECRET_KEY
+        generateValue: true

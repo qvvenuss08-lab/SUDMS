@@ -1,0 +1,23 @@
+venv/
+.venv/
+instance/
+__pycache__/
+.env
+
+# Local configuration, user data, and generated files
+.vscode/
+*.py[cod]
+*.log
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+.pytest_cache/
+.env.*
+!.env.example
+credentials*.json
+token*.json
+*service-account*.json
+calendar-apps-script.json
+
