@@ -1,17 +1,14 @@
-# Paid web service and persistent disk. Review the price in Render before deploying.
+# Render Free is suitable for a public demo. Its filesystem is ephemeral:
+# SQLite data and uploaded files can be lost when the service sleeps/restarts.
 services:
   - type: web
     name: sudms
     runtime: docker
-    plan: starter
+    plan: free
     region: singapore
     numInstances: 1
     autoDeployTrigger: "off"
     healthCheckPath: /healthz
-    disk:
-      name: sudms-data
-      mountPath: /var/data
-      sizeGB: 2
     envVars:
       - key: PORT
         value: "10000"
@@ -21,3 +18,11 @@ services:
         value: "1"
       - key: SUDMS_SECRET_KEY
         generateValue: true
+      - key: SUDMS_BOOTSTRAP_ADMIN_EMAIL
+        sync: false
+      - key: SUDMS_BOOTSTRAP_ADMIN_NAME
+        sync: false
+      - key: SUDMS_BOOTSTRAP_ADMIN_STUDENT_ID
+        sync: false
+      - key: SUDMS_BOOTSTRAP_ADMIN_PASSWORD
+        sync: false

@@ -290,6 +290,27 @@ def create_app(test_config=None):
             organization.club_type=club_type(organization.name)
         db.session.commit()
 
+        # Render Free has no interactive shell. These secrets create the first
+        # administrator on startup and recreate it if the ephemeral database resets.
+        bootstrap_email=os.environ.get('SUDMS_BOOTSTRAP_ADMIN_EMAIL','').strip().lower()
+        bootstrap_name=os.environ.get('SUDMS_BOOTSTRAP_ADMIN_NAME','').strip()
+        bootstrap_student_id=os.environ.get('SUDMS_BOOTSTRAP_ADMIN_STUDENT_ID','').strip()
+        bootstrap_password=os.environ.get('SUDMS_BOOTSTRAP_ADMIN_PASSWORD','')
+        if not User.query.filter_by(role='admin').first() and any((bootstrap_email,bootstrap_name,bootstrap_student_id,bootstrap_password)):
+            if not all((bootstrap_email,bootstrap_name,bootstrap_student_id,bootstrap_password)):
+                raise RuntimeError('กำหนด SUDMS_BOOTSTRAP_ADMIN_EMAIL, SUDMS_BOOTSTRAP_ADMIN_NAME, SUDMS_BOOTSTRAP_ADMIN_STUDENT_ID และ SUDMS_BOOTSTRAP_ADMIN_PASSWORD ให้ครบ')
+            if not re.fullmatch(r'[a-z0-9._%+\-]+@kkumail\.com',bootstrap_email):
+                raise RuntimeError('SUDMS_BOOTSTRAP_ADMIN_EMAIL ต้องเป็นอีเมล @kkumail.com')
+            if not re.fullmatch(r'[0-9]{9}-[0-9]',bootstrap_student_id):
+                raise RuntimeError('SUDMS_BOOTSTRAP_ADMIN_STUDENT_ID ต้องเป็นเลข 9 หลัก ตามด้วยขีดและเลข 1 หลัก')
+            if len(bootstrap_password)<10 or len(bootstrap_password)>128:
+                raise RuntimeError('SUDMS_BOOTSTRAP_ADMIN_PASSWORD ต้องยาว 10–128 ตัวอักษร')
+            if User.query.filter_by(email=bootstrap_email).first() or User.query.filter_by(student_id=bootstrap_student_id).first():
+                raise RuntimeError('อีเมลหรือรหัสนักศึกษาสำหรับแอดมินถูกใช้แล้ว')
+            organization=Organization.query.filter_by(name='องค์การนักศึกษา').one()
+            db.session.add(User(name=bootstrap_name,email=bootstrap_email,student_id=bootstrap_student_id,password_hash=generate_password_hash(bootstrap_password),organization_id=organization.id,role='admin',status='approved'))
+            db.session.commit()
+
     def validate_phone(value):
         # ตรวจรูปแบบเท่านั้น ยังไม่มีการยืนยัน OTP ทาง SMS
         if not isinstance(value,str): raise ValidationError('เบอร์โทรต้องเป็นตัวเลข 10 หลัก')
